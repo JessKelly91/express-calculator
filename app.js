@@ -5,54 +5,114 @@ const ExpressError = require('./expressError')
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-app.get('/mean', (req, res) => {
-    const numsString = req.query.nums;
-    const nums = createNumsArr(numsString);
-    const srtdNums = sortArr(nums);
+// try
+// catch (e){
+//     next(e)
+// }
 
-    const avg = calculateAverage(srtdNums);
+app.get('/mean', (req, res, next) => {
+    try{
+        if(!req.query.nums){
+            throw new ExpressError("Numbers are required", 400);
+        }
+        const numsString = req.query.nums;
+        const nums = createNumsArr(numsString);
 
-    resp = {
-        operation: "mean",
-        value: avg
-    };
+        for(let i=0; i < nums.length; i++){
+            if(isNaN(nums[i])){
+                throw new ExpressError("Must include only numbers", 400);
+            }
+        }
 
-    return res.json(resp)
+        const srtdNums = sortArr(nums);
+    
+        const avg = calculateAverage(srtdNums);
+    
+        resp = {
+            operation: "mean",
+            value: avg
+        };
+    
+        return res.json(resp)
+    } catch (e) {
+        next(e)
+    }
 })
 
-app.get('/median', (req, res) =>{
-    const numsString = req.query.nums;
-    const nums = createNumsArr(numsString);
-    const srtdNums = sortArr(nums);
+app.get('/median', (req, res, next) =>{
+    try{
+        if(!req.query.nums){
+            throw new ExpressError("Numbers are required", 400);
+        }
 
-    const med = calculateMedian(srtdNums);
+        const numsString = req.query.nums;
+        const nums = createNumsArr(numsString);
+
+        for(let i=0; i < nums.length; i++){
+            if(isNaN(nums[i])){
+                throw new ExpressError("Must include only numbers", 400);
+            }
+        }
+
+        const srtdNums = sortArr(nums);
     
-    resp = {
-        operation: "median",
-        value: med
+        const med = calculateMedian(srtdNums);
+        
+        resp = {
+            operation: "median",
+            value: med
+        }
+    
+        return res.json(resp)
+    } catch (e){
+        next(e)
     }
 
-    return res.json(resp)
 })
 
-app.get('/mode', (req, res) =>{
-    const numsString = req.query.nums;
-    const nums = createNumsArr(numsString);
-    
-    const mode = calculateMode(nums);
+app.get('/mode', (req, res, next) =>{
+    try{
+        if(!req.query.nums){
+            throw new ExpressError("Numbers are required", 400);
+        }
 
-    resp = {
-        operation: "mode",
-        value: mode
+        const numsString = req.query.nums;
+        const nums = createNumsArr(numsString);
+        
+        for(let i=0; i < nums.length; i++){
+            if(isNaN(nums[i])){
+                throw new ExpressError("Must include only numbers", 400);
+            }
+        }
+        
+        const mode = calculateMode(nums);
+    
+        resp = {
+            operation: "mode",
+            value: mode
+        }
+    
+        return res.json(resp)
+    } catch (e){
+        next(e)
     }
 
-    return res.json(resp)
 })
 
-app.use()
+app.use( (req, res, next) => {
+    const e = new ExpressError("Page not found", 404);
+    next(e);
+})
 
+app.use( (err, req, res, next) => {
+    let status = err.status || 500;
+    let msg = err.msg;
+
+    return res.status(status).json({
+        error: {msg, status}    
+    });
+})
 
 app.listen(3000, () =>{
     console.log('App open on port 3000');
