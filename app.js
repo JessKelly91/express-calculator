@@ -24,34 +24,31 @@ app.get('/mean', (req, res) => {
 app.get('/median', (req, res) =>{
     const numsString = req.query.nums;
     const nums = createNumsArr(numsString);
+    const srtdNums = sortArr(nums);
+
+    const med = calculateMedian(srtdNums);
     
+    resp = {
+        operation: "median",
+        value: med
+    }
 
-    // let srtdNums = nums.sort((a, b) => a-b);
-    // let midIdx;
-
-    // const med = calculateMedian(nums);
-
-    // resp = {
-    //     operation: "median",
-    //     value: med
-    // }
-
-    // return res.json(resp)
+    return res.json(resp)
 })
 
-// app.get('/mode', (req, res) =>{
-//     const numsString = req.query.nums;
-//     const nums = createNumsArr(numsString);
+app.get('/mode', (req, res) =>{
+    const numsString = req.query.nums;
+    const nums = createNumsArr(numsString);
     
-//     // const mode = calculateMode(nums);
+    const mode = calculateMode(nums);
 
-//     resp = {
-//         operation: "mode",
-//         value: mode
-//     }
+    resp = {
+        operation: "mode",
+        value: mode
+    }
 
-//     return res.json(resp)
-// })
+    return res.json(resp)
+})
 
 
 app.listen(3000, () =>{
