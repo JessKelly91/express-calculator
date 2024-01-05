@@ -12,7 +12,7 @@ function sortArr(arr){
 
 function calculateAverage(srtdArr){
     const sum = srtdArr.reduce((acc, curr) => acc + curr, 0);
-    const avg = sum / srtdArr.length;
+    const avg = Number((sum / srtdArr.length).toFixed(2));
     return avg
 }
 
@@ -41,27 +41,30 @@ function calculateMode(arr){
     let counter = {};
 
     arr.forEach( (num) => {
-        if(!counter[num]){
+        if (!counter[num]) {
             counter[num] = 1;
         }
-        else{
+        else {
             counter[num]++;
         }
     });
 
     let highestVal = 0;
-    let highestValNum;
+    let modes = [];
 
     for(let num in counter){
         const currVal = counter[num];
+
         if (currVal > highestVal){
             highestVal = currVal;
-            highestValNum = num;
+            modes = [Number(num)];
+        }
+        else if (currVal === highestVal) {
+            modes.push(Number(num));
         }
     }
 
-    return highestValNum;
-    
+    return modes.length === 1 ? modes[0] : modes;
 
 }
 
