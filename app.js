@@ -1,5 +1,6 @@
 const express = require('express');
 const {createNumsArr, sortArr, calculateAverage, calculateMedian, calculateMode} = require('./helpers')
+const ExpressError = require('./expressError')
 
 const app = express();
 
@@ -49,6 +50,8 @@ app.get('/mode', (req, res) =>{
 
     return res.json(resp)
 })
+
+app.use()
 
 
 app.listen(3000, () =>{
